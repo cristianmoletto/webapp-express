@@ -2,9 +2,13 @@ import express from "express"
 import moviesRouter from "./routers/moviesRouter.js"
 import handleError from "./middleWares/handleError.js";
 import routeNotFound from "./middleWares/routeNotFound.js";
+import cors from "cors";
 
 const app = express();
 const port = 3000;
+app.use(cors({
+    origin: process.env.FRONTEND_URL
+}))
 
 app.use(express.static("public"));
 
