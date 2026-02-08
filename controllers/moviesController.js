@@ -4,15 +4,25 @@ import { DateTime } from "luxon";
 
 // INDEX
 function index(req, res, next) {
-  const query = `
+
+  const {search} = req.query;
+  let params = [];
+
+  let query = `
     SELECT movies.*, 
     CAST(AVG(reviews.vote) AS FLOAT) AS avg_vote
     FROM movies
     LEFT JOIN reviews
-    ON movies.id = reviews.movie_id
-    GROUP BY movies.id`;
+    ON movies.id = reviews.movie_id `;
 
-  connection.query(query, (err, results) => {
+  if (search !== undefined) {
+    query += `WHERE movies.title LIKE ?`;
+    params.push(`%${search}%`)
+  }
+
+  query += `GROUP BY movies.id`;   
+
+  connection.query(query, params, (err, results) => {
     if (err) return next(err);
 
     const movies = results.map((movie) => {
