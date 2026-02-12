@@ -99,6 +99,27 @@ function show(req, res, next) {
   });
 }
 
+// STORE REVIEW
+
+function storeReview(req, res, next) {
+
+  console.log("rotta storeReview avviata")
+  const { id } = req.params;
+
+  const { name, vote, text } = req.body;
+
+  const sql = `
+    INSERT INTO reviews (movie_id, name, vote, text) 
+    VALUES (?, ?, ?, ? )`;
+
+  connection.query(sql, [id, name, vote, text], (err, results) => {
+    if (err) return next(err);
+    res.status(201);
+    res.json({
+      message: "Review added",
+    });
+  });
+}
 
 
-export default { index, show };
+export default { index, show, storeReview };
